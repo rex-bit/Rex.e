@@ -174,7 +174,10 @@ i[data-l="1"]{background:var(--l1)}i[data-l="2"]{background:var(--l2)}i[data-l="
 .contact{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 code.handle{font:500 15px/1 var(--mono);padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);user-select:all}
 button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 15px/1 var(--body);cursor:pointer}
-.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font:400 12.5px/1.5 var(--mono);color:var(--muted)}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font:400 12.5px/1.5 var(--mono);color:var(--muted)}
+button.copy.small{min-height:36px;padding:0 12px;font:500 13px/1 var(--mono)}
+.spark{position:fixed;z-index:40;width:7px;height:7px;border-radius:2px;background:var(--accent);pointer-events:none}
+h1 i{cursor:pointer}
 
 /* desktop only: blurred photo behind the page */
 @media (min-width:900px){
@@ -389,7 +392,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     </ul>
   </section>
 
-  <div class="foot">© 2026 rex-bit</div>
+  <div class="foot"><span>© 2026 rex-bit</span><button type="button" class="copy small" id="sharebtn">Copy link</button></div>
 </div>
 <button type="button" class="totop" id="totop" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <div class="tip" id="gh-tip" role="tooltip" hidden></div>
@@ -418,6 +421,35 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
   window.addEventListener("scroll", toggleTop, { passive: true });
   totop.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
   toggleTop();
+
+  /* footer: copy page link */
+  var share = $("sharebtn");
+  share.addEventListener("click", function () {
+    var url = "https://rex-bit.github.io/Rex-bit/";
+    var done = function () { share.textContent = "Copied"; setTimeout(function () { share.textContent = "Copy link"; }, 1600); };
+    try { navigator.clipboard.writeText(url).then(done, function () { share.textContent = url; }); }
+    catch (e) { share.textContent = url; }
+  });
+
+  /* small surprise: tap the orange dot in the name */
+  var dot = document.querySelector("h1 i");
+  if (dot && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    dot.addEventListener("click", function () {
+      var r = dot.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      for (var k = 0; k < 28; k++) {
+        var sp = document.createElement("span");
+        sp.className = "spark";
+        sp.style.left = cx + "px"; sp.style.top = cy + "px";
+        document.body.appendChild(sp);
+        var a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 110;
+        var an = sp.animate([
+          { transform: "translate(0,0) rotate(0deg)", opacity: 1 },
+          { transform: "translate(" + Math.cos(a) * d + "px," + (Math.sin(a) * d + 60) + "px) rotate(" + (Math.random() * 360) + "deg)", opacity: 0 }
+        ], { duration: 700 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.3,1)" });
+        an.onfinish = (function (el) { return function () { el.remove(); }; })(sp);
+      }
+    });
+  }
 
   /* copy buttons */
   Array.prototype.forEach.call(document.querySelectorAll("button.copy"), function (btn) {
