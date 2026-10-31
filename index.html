@@ -61,13 +61,15 @@ h2{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;mar
 .status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
 .status[data-s="build"]{color:var(--warn)}
 .status[data-s="build"]::before{background:var(--warn)}
+.status[data-s="paused"]{color:var(--muted)}
+.status[data-s="paused"]::before{background:transparent;box-shadow:inset 0 0 0 2px var(--muted)}
 .status[data-s="ready"]{color:var(--ok)}
 .status[data-s="ready"]::before{background:var(--ok)}
 .body{min-width:0}
 h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
 .body p{margin:0 0 12px;max-width:62ch}
 .stack{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
-.visit{margin:14px 0 0!important;font:500 14px/1.4 var(--mono)}
+.visit{margin:14px 0 0!important;font:400 13px/1.5 var(--mono);color:var(--muted)}
 .stack li{font:400 12.5px/1 var(--mono);padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--muted)}
 
 /* GitHub profile */
@@ -162,13 +164,13 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       <div class="meta">
         <span class="kind">Web app</span>
         <span>2026</span>
-        <span class="status" data-s="ready">Live</span>
+        <span class="status" data-s="paused">Paused</span>
       </div>
       <div class="body">
         <h3>Nawasena</h3>
         <p>A class website with a dark Material design, a video section, a photo gallery, and albums. A hidden live settings panel backed by Firebase lets me change content and theme without touching code.</p>
         <ul class="stack"><li>HTML / CSS / JS</li><li>Firebase</li><li>Vercel</li></ul>
-        <p class="visit"><a href="https://nawasena-viii.vercel.app/" target="_blank" rel="noopener">Visit site ↗</a></p>
+        <p class="visit">The site is paused on Vercel for now, so the link is off until it is back online.</p>
       </div>
     </article>
 
