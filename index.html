@@ -12,6 +12,7 @@
    entries with a narrow meta column, live GitHub profile block, skills as a plain ledger. */
 :root{
   --bg:#050505; --surface:#0E0E11; --ink:#EDEDF0; --muted:#8E8E99; --line:#232328;
+  --l0:#17171d; --l1:#2B3160; --l2:#4B58AD; --l3:#7285E6; --l4:#B5C0FF;
   --accent:#9AA8FF; --accent-ink:#050505; --ok:#5FD3A4; --warn:#E2B54A;
   --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
   --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
@@ -81,8 +82,18 @@ h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margi
 .stat{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 14px;min-width:96px}
 .stat b{display:block;font:700 22px/1.1 var(--display);font-variant-numeric:tabular-nums}
 .stat span{font:400 12px/1.4 var(--mono);color:var(--muted)}
-.graph{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:12px;overflow-x:auto}
-.graph img{display:block;min-width:640px;height:auto}
+.graph{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:14px 14px 12px;min-width:0}
+.gscroll{overflow-x:auto;padding-bottom:8px}
+.gmonths{display:grid;grid-auto-flow:column;grid-auto-columns:12px;gap:3px;margin-left:34px;height:16px;min-width:max-content;font:400 11px/1 var(--mono);color:var(--muted)}
+.gmonths span{white-space:nowrap}
+.gbody{display:flex;gap:6px;min-width:max-content}
+.gdays{display:grid;grid-template-rows:repeat(7,12px);gap:3px;width:28px;font:400 11px/12px var(--mono);color:var(--muted)}
+.gdays span:nth-child(1){grid-row:2}.gdays span:nth-child(2){grid-row:4}.gdays span:nth-child(3){grid-row:6}
+.gcells{display:grid;grid-template-rows:repeat(7,12px);grid-auto-flow:column;grid-auto-columns:12px;gap:3px}
+.gcells i,.glegend i{display:block;width:12px;height:12px;border-radius:3px;background:var(--l0)}
+i[data-l="1"]{background:var(--l1)}i[data-l="2"]{background:var(--l2)}i[data-l="3"]{background:var(--l3)}i[data-l="4"]{background:var(--l4)}
+.glegend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px;font:400 11px/1 var(--mono);color:var(--muted)}
+.glegend span{margin-inline:4px}
 .repos{list-style:none;margin:0;padding:0}
 .repo{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;padding-block:14px;border-top:1px dashed var(--line)}
 .repo:first-child{border-top:0}
@@ -203,8 +214,15 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
         <div class="stat"><b id="s-following">0</b><span>Following</span></div>
       </div>
 
-      <div class="graph">
-        <img src="https://ghchart.rshah.org/9AA8FF/rex-bit" alt="rex-bit GitHub contribution graph" width="720" height="112" loading="lazy" onerror="this.closest('.graph').hidden=true">
+      <div class="graph" id="gh-graph" hidden>
+        <div class="gscroll" id="gh-scroll">
+          <div class="gmonths" id="gh-months"></div>
+          <div class="gbody">
+            <div class="gdays"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+            <div class="gcells" id="gh-cells"></div>
+          </div>
+        </div>
+        <div class="glegend"><span>Less</span><i data-l="0"></i><i data-l="1"></i><i data-l="2"></i><i data-l="3"></i><i data-l="4"></i><span>More</span></div>
       </div>
 
       <ul class="repos" id="gh-repos"></ul>
@@ -269,6 +287,41 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     if (d < 365) return Math.floor(d / 30) + "mo ago";
     return Math.floor(d / 365) + "y ago";
   }
+
+  /* contribution grid (own colors, data from a public GitHub contributions API) */
+  fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=last")
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (d) {
+      var days = d.contributions || [];
+      if (!days.length) return;
+      var cells = $("gh-cells"), months = $("gh-months");
+      var first = new Date(days[0].date + "T00:00:00");
+      var offset = first.getDay();
+      var labels = [];
+      days.forEach(function (x, i) {
+        var dt = new Date(x.date + "T00:00:00");
+        var c = document.createElement("i");
+        c.setAttribute("data-l", x.level);
+        c.title = x.count + (x.count === 1 ? " contribution" : " contributions") + " on " + x.date;
+        if (i === 0) c.style.gridRow = String(offset + 1);
+        cells.appendChild(c);
+        if (dt.getDate() === 1) {
+          labels.push({ col: Math.floor((i + offset) / 7) + 1, name: dt.toLocaleString("en", { month: "short" }) });
+        }
+      });
+      if (!labels.length || labels[0].col >= 4) {
+        labels.unshift({ col: 1, name: first.toLocaleString("en", { month: "short" }) });
+      }
+      labels.forEach(function (l) {
+        var s = document.createElement("span");
+        s.textContent = l.name;
+        s.style.gridColumn = String(l.col);
+        months.appendChild(s);
+      });
+      $("gh-graph").hidden = false;
+      var sc = $("gh-scroll");
+      sc.scrollLeft = sc.scrollWidth;
+    }).catch(function () {});
 
   fetch("https://api.github.com/users/" + USER)
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
