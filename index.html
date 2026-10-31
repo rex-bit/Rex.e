@@ -12,7 +12,7 @@
    entries with a narrow meta column, live GitHub profile block, skills as a plain ledger. */
 :root{
   --bg:#050505; --surface:#0E0E11; --ink:#EDEDF0; --muted:#8E8E99; --line:#232328;
-  --l0:#17171d; --l1:#2B3160; --l2:#4B58AD; --l3:#7285E6; --l4:#B5C0FF;
+  --l0:#17171d; --l1:#3A4290; --l2:#5C6BD6; --l3:#8497FF; --l4:#C4CCFF;
   --accent:#9AA8FF; --accent-ink:#050505; --ok:#5FD3A4; --warn:#E2B54A;
   --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
   --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
@@ -83,6 +83,11 @@ h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margi
 .stat b{display:block;font:700 22px/1.1 var(--display);font-variant-numeric:tabular-nums}
 .stat span{font:400 12px/1.4 var(--mono);color:var(--muted)}
 .graph{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:14px 14px 12px;min-width:0}
+.ghead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.gyear{font:700 20px/1 var(--display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.gyears{display:flex;gap:6px;flex-wrap:wrap}
+.gyears button{min-height:36px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--muted);font:500 13px/1 var(--mono);cursor:pointer}
+.gyears button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .gscroll{overflow-x:auto;padding-bottom:8px}
 .gmonths{display:grid;grid-auto-flow:column;grid-auto-columns:12px;gap:3px;margin-left:34px;height:16px;min-width:max-content;font:400 11px/1 var(--mono);color:var(--muted)}
 .gmonths span{white-space:nowrap}
@@ -215,6 +220,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       </div>
 
       <div class="graph" id="gh-graph" hidden>
+        <div class="ghead"><span class="gyear" id="gh-year"></span><div class="gyears" id="gh-years"></div></div>
         <div class="gscroll" id="gh-scroll">
           <div class="gmonths" id="gh-months"></div>
           <div class="gbody">
@@ -288,51 +294,80 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     return Math.floor(d / 365) + "y ago";
   }
 
-  /* contribution grid (own colors, data from a public GitHub contributions API) */
-  fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=last")
-    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-    .then(function (d) {
-      var days = d.contributions || [];
-      if (!days.length) return;
-      var cells = $("gh-cells"), months = $("gh-months");
-      var first = new Date(days[0].date + "T00:00:00");
-      var offset = first.getDay();
-      var labels = [];
-      days.forEach(function (x, i) {
-        var dt = new Date(x.date + "T00:00:00");
-        var c = document.createElement("i");
-        c.setAttribute("data-l", x.level);
-        c.title = x.count + (x.count === 1 ? " contribution" : " contributions") + " on " + x.date;
-        if (i === 0) c.style.gridRow = String(offset + 1);
-        cells.appendChild(c);
-        if (dt.getDate() === 1) {
-          labels.push({ col: Math.floor((i + offset) / 7) + 1, name: dt.toLocaleString("en", { month: "short" }) });
-        }
-      });
-      if (!labels.length || labels[0].col >= 4) {
-        labels.unshift({ col: 1, name: first.toLocaleString("en", { month: "short" }) });
-      }
-      labels.forEach(function (l) {
-        var s = document.createElement("span");
-        s.textContent = l.name;
-        s.style.gridColumn = String(l.col);
-        months.appendChild(s);
-      });
-      $("gh-graph").hidden = false;
-      var sc = $("gh-scroll");
-      sc.scrollLeft = sc.scrollWidth;
-    }).catch(function () {});
+  var userP = fetch("https://api.github.com/users/" + USER)
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); });
 
-  fetch("https://api.github.com/users/" + USER)
-    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-    .then(function (u) {
-      if (u.name) $("gh-name").textContent = u.name;
-      if (u.bio) { $("gh-bio").textContent = u.bio; $("gh-bio").hidden = false; }
-      $("s-repos").textContent = u.public_repos;
-      $("s-followers").textContent = u.followers;
-      $("s-following").textContent = u.following;
-      $("gh-stats").hidden = false;
-    }).catch(function () {});
+  userP.then(function (u) {
+    if (u.name) $("gh-name").textContent = u.name;
+    if (u.bio) { $("gh-bio").textContent = u.bio; $("gh-bio").hidden = false; }
+    $("s-repos").textContent = u.public_repos;
+    $("s-followers").textContent = u.followers;
+    $("s-following").textContent = u.following;
+    $("gh-stats").hidden = false;
+  }).catch(function () {});
+
+  /* contribution grid: one calendar year (Jan to today), own colors, public contributions API */
+  var cells = $("gh-cells"), months = $("gh-months"), yearsEl = $("gh-years");
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  var now = new Date();
+  var today = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+
+  function render(days, year) {
+    cells.textContent = ""; months.textContent = "";
+    days = days.filter(function (x) { return x.date <= today; });
+    if (!days.length) return;
+    var first = new Date(days[0].date + "T00:00:00");
+    var offset = first.getDay();
+    var labels = [];
+    days.forEach(function (x, i) {
+      var dt = new Date(x.date + "T00:00:00");
+      var c = document.createElement("i");
+      c.setAttribute("data-l", x.level);
+      c.title = x.count + (x.count === 1 ? " contribution" : " contributions") + " on " + x.date;
+      if (i === 0) c.style.gridRow = String(offset + 1);
+      cells.appendChild(c);
+      if (dt.getDate() === 1) {
+        labels.push({ col: Math.floor((i + offset) / 7) + 1, name: dt.toLocaleString("en", { month: "short" }) });
+      }
+    });
+    if (!labels.length || labels[0].col >= 4) {
+      labels.unshift({ col: 1, name: first.toLocaleString("en", { month: "short" }) });
+    }
+    labels.forEach(function (l) {
+      var s = document.createElement("span");
+      s.textContent = l.name;
+      s.style.gridColumn = String(l.col);
+      months.appendChild(s);
+    });
+    $("gh-year").textContent = String(year);
+    $("gh-graph").hidden = false;
+  }
+
+  function load(year) {
+    Array.prototype.forEach.call(yearsEl.children, function (b) {
+      b.setAttribute("aria-pressed", String(b.textContent === String(year)));
+    });
+    fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=" + year)
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) { render(d.contributions || [], year); })
+      .catch(function () {});
+  }
+
+  userP.then(function (u) { return new Date(u.created_at).getFullYear(); }, function () { return now.getFullYear(); })
+    .then(function (start) {
+      var cur = now.getFullYear();
+      start = Math.max(start || cur, cur - 3);
+      for (var y = cur; y >= start; y--) {
+        (function (yy) {
+          var b = document.createElement("button");
+          b.type = "button"; b.textContent = String(yy);
+          b.addEventListener("click", function () { load(yy); });
+          yearsEl.appendChild(b);
+        })(y);
+      }
+      if (start === cur) yearsEl.hidden = true;
+      load(cur);
+    });
 
   fetch("https://api.github.com/users/" + USER + "/repos?sort=pushed&per_page=30")
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
