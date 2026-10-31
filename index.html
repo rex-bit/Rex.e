@@ -12,8 +12,8 @@
    entries with a narrow meta column, live GitHub profile block, skills as a plain ledger. */
 :root{
   --bg:#050505; --surface:#0E0E11; --ink:#EDEDF0; --muted:#8E8E99; --line:#232328;
-  --l0:#17171d; --l1:#3A4290; --l2:#5C6BD6; --l3:#8497FF; --l4:#C4CCFF;
-  --accent:#9AA8FF; --accent-ink:#050505; --ok:#5FD3A4; --warn:#E2B54A;
+  --l0:#1A1716; --l1:#5A1F1A; --l2:#A63425; --l3:#E8602A; --l4:#FF9F43;
+  --accent:#FF7A3D; --accent-ink:#050505; --ok:#5FD3A4; --warn:#E2B54A;
   --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
   --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -343,13 +343,20 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     $("gh-graph").hidden = false;
   }
 
+  var dataP = fetch("https://raw.githubusercontent.com/rex-bit/Rex.e/main/contributions.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .catch(function () { return null; });
+
   function load(year) {
     Array.prototype.forEach.call(yearsEl.children, function (b) {
       b.setAttribute("aria-pressed", String(b.textContent === String(year)));
     });
-    fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=" + year)
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) { render(d.contributions || [], year); })
+    dataP.then(function (j) {
+      if (j && j.years && j.years[year]) return j.years[year];
+      return fetch("https://github-contributions-api.jogruber.de/v4/" + USER + "?y=" + year)
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (d) { return d.contributions || []; });
+    }).then(function (days) { render(days, year); })
       .catch(function () {});
   }
 
