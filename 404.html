@@ -4,31 +4,58 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Page not found | rex-bit</title>
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap">
 <style>
-:root{--bg:#050505;--ink:#EDEDF0;--muted:#8E8E99;--line:#232328;--accent:#FF7A3D;color-scheme:dark}
+:root{--bg:#050505;--surface:#0E0E11;--ink:#EDEDF0;--muted:#9A9AA6;--line:#2A2A31;--accent:#FF7A3D;--accent-ink:#050505;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;--body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
-  display:grid;place-items:center;
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:16px/1.6 var(--body);display:grid;place-items:center;position:relative;overflow:hidden;
   padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
-main{max-width:520px;min-width:0}
-.code{font:500 13px/1 "IBM Plex Mono",ui-monospace,monospace;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin:0 0 14px}
-h1{font:800 clamp(64px,22vw,140px)/.9 "Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;letter-spacing:-.045em;margin:0 0 20px}
-h1 i{font-style:normal;color:var(--accent)}
-p{margin:0 0 24px;color:var(--muted)}
-a.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;background:var(--accent);color:#050505;font:600 15px/1 "IBM Plex Sans",sans-serif;text-decoration:none}
-a.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+body::before{content:"";position:fixed;inset:-48px;z-index:-2;background:url(/Rex-bit/assets/bg.jpg) center/cover no-repeat;filter:blur(14px)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse at center,rgba(5,5,5,.55),rgba(5,5,5,.9) 75%)}
+main{text-align:center;max-width:560px;min-width:0}
+.tag{display:inline-flex;align-items:center;gap:8px;margin:0 0 6px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(14,14,17,.7);font:500 12.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tag i{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.num{display:flex;justify-content:center;font:800 clamp(110px,34vw,240px)/.9 var(--display);letter-spacing:-.05em;margin:4px 0 8px;user-select:none}
+.num span:nth-child(2){color:var(--accent);display:inline-block;animation:bob 3.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){.num span:nth-child(2){animation:none}}
+h1{font:700 clamp(22px,5vw,30px)/1.25 var(--display);letter-spacing:-.015em;margin:0 0 10px;text-wrap:balance}
+p{margin:0 0 18px;color:var(--muted)}
+code{display:inline-block;max-width:100%;overflow-wrap:anywhere;font:400 13px/1.4 var(--mono);padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:rgba(14,14,17,.7);color:var(--ink);margin:0 0 26px}
+.cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;border-radius:8px;font:600 15px/1 var(--body);text-decoration:none;border:1px solid var(--line);background:rgba(14,14,17,.7);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 </style>
 </head>
 <body>
 <main>
-  <p class="code">Error 404</p>
-  <h1>Lost<i>.</i></h1>
-  <p>That page doesn't exist, or it was moved. The portfolio is one tap away.</p>
-  <a class="btn" href="/Rex-bit/">Back to portfolio</a>
+  <p class="tag"><i></i>Error 404</p>
+  <div class="num" aria-hidden="true"><span>4</span><span>0</span><span>4</span></div>
+  <h1 id="line">This page wandered off the map.</h1>
+  <p>The link may be broken, or the page was moved.</p>
+  <code id="path"></code>
+  <div class="cta">
+    <a class="btn primary" href="/Rex-bit/">Back to portfolio</a>
+    <a class="btn" href="https://github.com/rex-bit" target="_blank" rel="noopener">GitHub</a>
+  </div>
 </main>
+<script>
+(function () {
+  var lines = [
+    "This page wandered off the map.",
+    "You've walked past the edge of the world.",
+    "Nothing has been built here yet.",
+    "This block doesn't exist in this world."
+  ];
+  document.getElementById("line").textContent = lines[Math.floor(Math.random() * lines.length)];
+  document.getElementById("path").textContent = location.pathname + location.search;
+})();
+</script>
 </body>
 </html>
