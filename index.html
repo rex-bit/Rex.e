@@ -97,6 +97,10 @@ h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margi
 .gcells{display:grid;grid-template-rows:repeat(7,12px);grid-auto-flow:column;grid-auto-columns:12px;gap:3px}
 .gcells i,.glegend i{display:block;width:12px;height:12px;border-radius:3px;background:var(--l0)}
 i[data-l="1"]{background:var(--l1)}i[data-l="2"]{background:var(--l2)}i[data-l="3"]{background:var(--l3)}i[data-l="4"]{background:var(--l4)}
+.gcells i:hover{outline:1px solid var(--ink);outline-offset:1px}
+.tip{position:fixed;z-index:30;left:0;top:0;pointer-events:none;white-space:nowrap;padding:7px 10px;border-radius:6px;background:#26262d;border:1px solid #3b3b46;color:var(--ink);font:500 12.5px/1.3 var(--body);box-shadow:0 6px 18px rgba(0,0,0,.6)}
+.tip::after{content:"";position:absolute;left:var(--ax,50%);width:8px;height:8px;background:#26262d;border:1px solid #3b3b46;border-top:0;border-left:0;transform:translateX(-50%) rotate(45deg);bottom:-5px}
+.tip[data-below]::after{bottom:auto;top:-5px;transform:translateX(-50%) rotate(225deg)}
 .glegend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:6px;font:400 11px/1 var(--mono);color:var(--muted)}
 .glegend span{margin-inline:4px}
 .repos{list-style:none;margin:0;padding:0}
@@ -257,6 +261,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
 
   <div class="foot">© 2026 rex-bit</div>
 </div>
+<div class="tip" id="gh-tip" role="tooltip" hidden></div>
 
 <script>
 (function () {
@@ -312,6 +317,37 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
   var now = new Date();
   var today = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
 
+  function ord(n) { var s = ["th", "st", "nd", "rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+  function label(x) {
+    var dt = new Date(x.date + "T00:00:00");
+    var when = dt.toLocaleString("en", { month: "long" }) + " " + ord(dt.getDate()) + ".";
+    var n = x.count;
+    return (n === 0 ? "No contributions" : n + (n === 1 ? " contribution" : " contributions")) + " on " + when;
+  }
+
+  var tip = $("gh-tip");
+  function hideTip() { tip.hidden = true; }
+  function showTip(t) {
+    if (!t || !t.dataset || !t.dataset.tip) return;
+    tip.textContent = t.dataset.tip;
+    tip.hidden = false;
+    tip.removeAttribute("data-below");
+    var r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+    var cx = r.left + r.width / 2;
+    var left = Math.max(8, Math.min(cx - w / 2, window.innerWidth - w - 8));
+    var top = r.top - h - 9;
+    if (top < 8) { top = r.bottom + 9; tip.setAttribute("data-below", ""); }
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+    tip.style.setProperty("--ax", (cx - left) + "px");
+  }
+  cells.addEventListener("pointerover", function (e) { if (e.pointerType === "mouse") showTip(e.target); });
+  cells.addEventListener("pointerout", function (e) { if (e.pointerType === "mouse") hideTip(); });
+  cells.addEventListener("click", function (e) { if (e.target.tagName === "I") showTip(e.target); });
+  document.addEventListener("click", function (e) { if (!cells.contains(e.target)) hideTip(); });
+  $("gh-scroll").addEventListener("scroll", hideTip);
+  window.addEventListener("scroll", hideTip, { passive: true });
+
   function render(days, year) {
     cells.textContent = ""; months.textContent = "";
     days = days.filter(function (x) { return x.date <= today; });
@@ -323,7 +359,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       var dt = new Date(x.date + "T00:00:00");
       var c = document.createElement("i");
       c.setAttribute("data-l", x.level);
-      c.title = x.count + (x.count === 1 ? " contribution" : " contributions") + " on " + x.date;
+      c.dataset.tip = label(x);
       if (i === 0) c.style.gridRow = String(offset + 1);
       cells.appendChild(c);
       if (dt.getDate() === 1) {
