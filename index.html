@@ -80,7 +80,12 @@ h2{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;mar
 .count{font:400 13px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
 
 .entry{display:grid;grid-template-columns:11rem minmax(0,1fr);gap:8px 28px;padding-block:22px;border-top:1px dashed var(--line)}
-.entry.first{border-top:0;padding-top:0}
+.grp{margin-top:30px}
+.grp:first-of-type{margin-top:0}
+.grp-h{display:flex;align-items:center;gap:10px;margin:0 0 4px;font:600 14px/1 var(--mono);letter-spacing:.04em;color:var(--ink)}
+.grp-h span{color:var(--muted);font-weight:400}
+.grp-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.grp .entry:first-of-type{border-top:0;padding-top:16px}
 .meta{display:flex;flex-direction:column;gap:6px;font:400 13px/1.4 var(--mono);color:var(--muted);min-width:0}
 .meta .role{color:var(--accent)}
 .meta .kind{color:var(--ink);font-weight:500}
@@ -88,16 +93,13 @@ h2{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;mar
 .status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
 .status[data-s="build"]{color:var(--warn)}
 .status[data-s="build"]::before{background:var(--warn)}
-.status[data-s="paused"]{color:var(--muted)}
-.status[data-s="paused"]::before{background:transparent;box-shadow:inset 0 0 0 2px var(--muted)}
+.status[data-s="paused"],.status[data-s="exp"]{color:var(--muted)}
+.status[data-s="paused"]::before,.status[data-s="exp"]::before{background:transparent;box-shadow:inset 0 0 0 2px var(--muted)}
 .status[data-s="ready"]{color:var(--ok)}
 .status[data-s="ready"]::before{background:var(--ok)}
 .body{min-width:0}
 h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
 .body p{margin:0 0 12px;max-width:62ch}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 20px}
-.chips button{min-height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:500 13px/1 var(--mono);cursor:pointer}
-.chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .totop{position:fixed;z-index:25;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;
   right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));box-shadow:0 6px 18px rgba(0,0,0,.5)}
 .totop svg{width:20px;height:20px}
@@ -197,7 +199,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
   <header class="hero">
     <h1>rex-bit<i>.</i></h1>
     <p class="lead">I build Roblox games and web tools people actually use.</p>
-    <p class="sub">I write Luau scripts, model assets in Blender, and build web apps with Next.js and Python. Below are the projects I'm working on and the ones I've shipped.</p>
+    <p class="sub">I write Luau scripts, model assets in Blender, and build websites with HTML, CSS, and JavaScript. Below are the projects I've worked on.</p>
     <div class="cta">
       <a class="btn primary" href="#projects">See projects</a>
       <a class="btn" href="https://github.com/rex-bit" target="_blank" rel="noopener">GitHub</a>
@@ -206,19 +208,15 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
 
   <section id="about">
     <div class="sec-h"><h2>About</h2></div>
-    <p class="about">I'm rex-bit, a developer who builds Roblox games and web tools. I like taking an idea from a rough sketch to something people can open and use: a cafe game, a voting app, a class website.</p>
-    <p class="now"><b>Now</b>Cafe &amp; Barista Game · OSIS Voting</p>
+    <p class="about">I'm rex-bit, a developer who builds Roblox games and web tools. I like taking an idea from a rough sketch to something people can open and use: tower games, a party game, a class website.</p>
+    <p class="now"><b>Now</b>Game UI Panels</p>
   </section>
 
   <section id="projects">
-    <div class="sec-h"><h2>Projects</h2><span class="count" id="p-count">8 entries</span></div>
-    <div class="chips" id="filters" role="group" aria-label="Filter projects">
-      <button type="button" data-f="all" aria-pressed="true">All</button>
-      <button type="button" data-f="roblox" aria-pressed="false">Roblox</button>
-      <button type="button" data-f="web" aria-pressed="false">Web</button>
-    </div>
-
-    <article class="entry" data-cat="roblox">
+    <div class="sec-h"><h2>Projects</h2><span class="count">7 entries</span></div>
+    <div class="grp">
+      <h3 class="grp-h">Roblox<span>6</span></h3>
+      <article class="entry">
       <div class="meta">
         <span class="kind">Roblox game</span>
         <span class="role">Builder</span>
@@ -231,7 +229,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       </div>
     </article>
 
-    <article class="entry" data-cat="roblox">
+    <article class="entry">
       <div class="meta">
         <span class="kind">Roblox game</span>
         <span class="role">Scripter + Builder</span>
@@ -244,7 +242,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       </div>
     </article>
 
-    <article class="entry" data-cat="roblox">
+    <article class="entry">
       <div class="meta">
         <span class="kind">Roblox game</span>
         <span class="role">Scripter + Builder</span>
@@ -257,7 +255,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       </div>
     </article>
 
-    <article class="entry" data-cat="roblox">
+    <article class="entry">
       <div class="meta">
         <span class="kind">Game UI</span>
         <span class="status" data-s="build">In progress</span>
@@ -270,7 +268,36 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       </div>
     </article>
 
-    <article class="entry" data-cat="web">
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Roblox system</span>
+        <span>2026</span>
+        <span class="status" data-s="ready">Running</span>
+      </div>
+      <div class="body">
+        <h3>Elevator System</h3>
+        <p>An elevator for a Roblox map with a client-side panel and camera, a server-side travel script, and support for R6 characters.</p>
+        <ul class="stack"><li>Luau</li><li>Client / Server</li><li>R6</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Roblox game</span>
+        <span>2026</span>
+        <span class="status" data-s="exp">Experiment</span>
+      </div>
+      <div class="body">
+        <h3>Cafe &amp; Barista Game</h3>
+        <p>An experiment in building a cafe game. Assets like the shop sign and street lamp are modeled in Blender and imported into Studio, alongside custom UI such as a player list.</p>
+        <ul class="stack"><li>Luau</li><li>Roblox Studio</li><li>Blender</li></ul>
+      </div>
+    </article>
+    </div>
+
+    <div class="grp">
+      <h3 class="grp-h">Web<span>1</span></h3>
+      <article class="entry">
       <div class="meta">
         <span class="kind">Web app</span>
         <span>2026</span>
@@ -283,45 +310,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
         <p class="visit">The site is paused on Vercel for now, so the link is off until it is back online.</p>
       </div>
     </article>
-
-    <article class="entry" data-cat="roblox">
-      <div class="meta">
-        <span class="kind">Roblox game</span>
-        <span>2026</span>
-        <span class="status" data-s="build">In progress</span>
-      </div>
-      <div class="body">
-        <h3>Cafe &amp; Barista Game</h3>
-        <p>My own cafe game. Assets like the shop sign and street lamp are modeled in Blender and imported into Studio, alongside custom UI such as a player list.</p>
-        <ul class="stack"><li>Luau</li><li>Roblox Studio</li><li>Blender</li></ul>
-      </div>
-    </article>
-
-    <article class="entry" data-cat="web">
-      <div class="meta">
-        <span class="kind">Web app</span>
-        <span>2026</span>
-        <span class="status" data-s="build">In progress</span>
-      </div>
-      <div class="body">
-        <h3>OSIS Voting</h3>
-        <p>A student council election app for vote.innovatek.app. Built in stages: open voting first, then email login, then Google login.</p>
-        <ul class="stack"><li>Next.js</li><li>Supabase</li><li>Vercel</li></ul>
-      </div>
-    </article>
-
-    <article class="entry" data-cat="roblox">
-      <div class="meta">
-        <span class="kind">Roblox system</span>
-        <span>2026</span>
-        <span class="status" data-s="ready">Running</span>
-      </div>
-      <div class="body">
-        <h3>Elevator System</h3>
-        <p>An elevator for a Roblox map with a client-side panel and camera, a server-side travel script, and support for R6 characters.</p>
-        <ul class="stack"><li>Luau</li><li>Client / Server</li><li>R6</li></ul>
-      </div>
-    </article>
+    </div>
   </section>
 
   <section id="github">
@@ -364,7 +353,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     <dl class="ledger">
       <div><dt>Roblox</dt><dd>Luau scripting, custom UI, typewriter-style dialog modules, client–server systems.</dd></div>
       <div><dt>3D</dt><dd>Asset modeling in Blender and importing into Roblox Studio.</dd></div>
-      <div><dt>Web</dt><dd>Next.js, Supabase, Vercel, and Python backends with FastAPI.</dd></div>
+      <div><dt>Web</dt><dd>HTML, CSS, JavaScript, Firebase, and Vercel.</dd></div>
     </dl>
   </section>
 
@@ -399,22 +388,6 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     }, { rootMargin: "-35% 0px -60% 0px" });
     ["about", "projects", "github", "skills", "contact"].forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
   }
-
-  /* project filter */
-  var entries = document.querySelectorAll("#projects .entry"), chips = document.querySelectorAll("#filters button");
-  function applyFilter(f) {
-    var shown = 0;
-    entries.forEach(function (e) {
-      var ok = f === "all" || e.getAttribute("data-cat") === f;
-      e.hidden = !ok;
-      e.classList.remove("first");
-      if (ok) { if (!shown) e.classList.add("first"); shown++; }
-    });
-    chips.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-f") === f)); });
-    $("p-count").textContent = shown + (shown === 1 ? " entry" : " entries");
-  }
-  chips.forEach(function (b) { b.addEventListener("click", function () { applyFilter(b.getAttribute("data-f")); }); });
-  applyFilter("all");
 
   /* back to top */
   var totop = $("totop");
