@@ -52,6 +52,19 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   padding:14px 0 10px;font:500 13px/1.4 var(--mono);color:var(--muted)}
 .top::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);
   background:rgba(5,5,5,.84);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+@media (max-width:560px){
+  .top{gap:10px}
+  .nav{gap:11px}
+  .nav a{font-size:12px}
+}
+@media (max-width:420px){
+  .top>span{display:none}
+  .nav{width:100%;justify-content:space-between}
+}
+@media (max-width:899px){
+  /* phone only: the bar fades out toward the left and right edges */
+  .top::before{-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent)}
+}
 .top>span{flex:none}
 .top b{color:var(--ink);font-weight:500}
 .nav{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;min-width:0}
