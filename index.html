@@ -11,14 +11,14 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="rex-bit | Roblox games &amp; web tools">
 <meta property="og:description" content="Portfolio of rex-bit: Roblox games, web apps, and tools.">
-<meta property="og:url" content="https://rex-bit.github.io/Rex.e/">
-<meta property="og:image" content="https://rex-bit.github.io/Rex.e/assets/og.jpg">
+<meta property="og:url" content="https://rex-bit.github.io/Rex-bit/">
+<meta property="og:image" content="https://rex-bit.github.io/Rex-bit/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="rex-bit | Roblox games &amp; web tools">
 <meta name="twitter:description" content="Portfolio of rex-bit: Roblox games, web apps, and tools.">
-<meta name="twitter:image" content="https://rex-bit.github.io/Rex.e/assets/og.jpg">
+<meta name="twitter:image" content="https://rex-bit.github.io/Rex-bit/assets/og.jpg">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: changelog-style page on pure black. Oversized name up top, projects as build
@@ -94,6 +94,9 @@ h2{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;mar
 .body{min-width:0}
 h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
 .body p{margin:0 0 12px;max-width:62ch}
+.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.shots img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
+.shots img:only-child{grid-column:1/-1;max-width:420px}
 .stack{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
 .visit{margin:14px 0 0!important;font:400 13px/1.5 var(--mono);color:var(--muted)}
 .stack li{font:400 12.5px/1 var(--mono);padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--muted)}
@@ -166,6 +169,9 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
   .meta{flex-direction:row;flex-wrap:wrap;gap:4px 14px}
   .hero{padding-block:40px 36px}
   .clabel{width:100%}
+  .shots{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .shots img:first-child{grid-column:1/-1}
+  .shots img:only-child{max-width:none}
   .repo{grid-template-columns:minmax(0,1fr)}
   .repo .rm{grid-row:auto;grid-column:1;text-align:left}
 }
@@ -197,7 +203,56 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
   </section>
 
   <section id="projects">
-    <div class="sec-h"><h2>Projects</h2><span class="count">4 entries</span></div>
+    <div class="sec-h"><h2>Projects</h2><span class="count">8 entries</span></div>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Roblox game</span>
+      </div>
+      <div class="body">
+        <h3>Musical Show Tower</h3>
+        <div class="shots"><img src="assets/projects/mst-1.jpg" alt="Musical Show Tower screenshot 1" loading="lazy" decoding="async"><img src="assets/projects/mst-2.jpg" alt="Musical Show Tower screenshot 2" loading="lazy" decoding="async"><img src="assets/projects/mst-3.jpg" alt="Musical Show Tower screenshot 3" loading="lazy" decoding="async"></div>
+        <p>A tower climb set on a music-show stage, with studded Lego-style platforms, floating pieces, and a big title logo.</p>
+        <ul class="stack"><li>Roblox</li><li>Luau</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Roblox game</span>
+      </div>
+      <div class="body">
+        <h3>Kimosa Wallhop Tower</h3>
+        <div class="shots"><img src="assets/projects/kwt-1.jpg" alt="Kimosa Wallhop Tower screenshot 1" loading="lazy" decoding="async"><img src="assets/projects/kwt-2.jpg" alt="Kimosa Wallhop Tower screenshot 2" loading="lazy" decoding="async"><img src="assets/projects/kwt-3.jpg" alt="Kimosa Wallhop Tower screenshot 3" loading="lazy" decoding="async"></div>
+        <p>A bright wall-hop tower in pink, lime, and sky blue, with a studded Lego-style look.</p>
+        <ul class="stack"><li>Roblox</li><li>Luau</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Roblox game</span>
+      </div>
+      <div class="body">
+        <h3>Boom Pass</h3>
+        <div class="shots"><img src="assets/projects/bp-1.jpg" alt="Boom Pass screenshot 1" loading="lazy" decoding="async"><img src="assets/projects/bp-2.jpg" alt="Boom Pass screenshot 2" loading="lazy" decoding="async"></div>
+        <p>A bomb-passing party game on a floating arena, with player tags, a lobby, and a studded Lego-style look.</p>
+        <ul class="stack"><li>Roblox</li><li>Luau</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Game UI</span>
+        <span class="status" data-s="build">In progress</span>
+      </div>
+      <div class="body">
+        <h3>Game UI Panels</h3>
+        <div class="shots"><img src="assets/projects/ui-1.jpg" alt="Game UI Panels screenshot 1" loading="lazy" decoding="async"></div>
+        <p>Interface panels for Stats, Trading, and a PhotoBooth with options like Green Screen, Experience Thumbnail, and Hide Overhead GUIs.</p>
+        <ul class="stack"><li>Roblox</li><li>Luau</li><li>UI</li></ul>
+      </div>
+    </article>
 
     <article class="entry">
       <div class="meta">
@@ -441,7 +496,7 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
     $("gh-graph").hidden = false;
   }
 
-  var dataP = fetch("https://raw.githubusercontent.com/rex-bit/Rex.e/main/contributions.json")
+  var dataP = fetch("https://raw.githubusercontent.com/rex-bit/Rex-bit/main/contributions.json")
     .then(function (r) { return r.ok ? r.json() : null; })
     .catch(function () { return null; });
 
