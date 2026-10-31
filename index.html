@@ -6,6 +6,19 @@
 <title>rex-bit Portfolio</title>
 <meta name="description" content="Portfolio of rex-bit: Roblox games and web tools.">
 <meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050505'/%3E%3Ctext x='10' y='44' font-family='monospace' font-size='34' font-weight='700' fill='%23EDEDF0'%3Er%3C/text%3E%3Ccircle cx='46' cy='41' r='5' fill='%23FF7A3D'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="rex-bit | Roblox games &amp; web tools">
+<meta property="og:description" content="Portfolio of rex-bit: Roblox games, web apps, and tools.">
+<meta property="og:url" content="https://rex-bit.github.io/Rex.e/">
+<meta property="og:image" content="https://rex-bit.github.io/Rex.e/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="rex-bit | Roblox games &amp; web tools">
+<meta name="twitter:description" content="Portfolio of rex-bit: Roblox games, web apps, and tools.">
+<meta name="twitter:image" content="https://rex-bit.github.io/Rex.e/assets/og.jpg">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: changelog-style page on pure black. Oversized name up top, projects as build
@@ -24,7 +37,7 @@ html{background:var(--bg)}
 body{
   margin:0; background:var(--bg); color:var(--ink);
   font:16px/1.6 var(--body);
-  padding-block:20px 56px;
+  padding-block:0 56px;
   padding-left:max(16px,env(safe-area-inset-left,0px));
   padding-right:max(16px,env(safe-area-inset-right,0px));
 }
@@ -33,10 +46,21 @@ img{max-width:100%}
 a{color:var(--accent);text-underline-offset:3px}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
-.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
-  font:500 13px/1.4 var(--mono);color:var(--muted);
-  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:14px 0 10px;background:rgba(5,5,5,.84);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);font:500 13px/1.4 var(--mono);color:var(--muted)}
 .top b{color:var(--ink);font-weight:500}
+.nav{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{color:var(--muted);text-decoration:none;font:500 12.5px/1 var(--mono);padding:10px 0 8px;border-bottom:2px solid transparent;white-space:nowrap}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+section[id]{scroll-margin-top:60px}
+.about{max-width:62ch;margin:0 0 14px;font-size:17px;line-height:1.65}
+.now{margin:0;font:400 13px/1.6 var(--mono);color:var(--muted)}
+.now b{color:var(--ink);font-weight:500;margin-right:8px}
 
 .hero{padding-block:56px 48px;min-width:0}
 h1{font:800 clamp(56px,18vw,132px)/.92 var(--display);letter-spacing:-.045em;margin:0 0 28px;overflow-wrap:anywhere}
@@ -143,8 +167,10 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
 <body>
 <div class="wrap">
   <div class="top">
-    <span><b>rex-bit</b> / portfolio</span>
-    <span>build 2026.10</span>
+    <span><b>rex-bit</b></span>
+    <nav class="nav" aria-label="Sections">
+      <a href="#about">About</a><a href="#projects">Projects</a><a href="#github">GitHub</a><a href="#skills">Skills</a><a href="#contact">Contact</a>
+    </nav>
   </div>
 
   <header class="hero">
@@ -156,6 +182,12 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
       <a class="btn" href="https://github.com/rex-bit" target="_blank" rel="noopener">GitHub</a>
     </div>
   </header>
+
+  <section id="about">
+    <div class="sec-h"><h2>About</h2></div>
+    <p class="about">I'm rex-bit, a developer who builds Roblox games and web tools. I like taking an idea from a rough sketch to something people can open and use: a cafe game, a voting app, a class website.</p>
+    <p class="now"><b>Now</b>Cafe &amp; Barista Game · OSIS Voting</p>
+  </section>
 
   <section id="projects">
     <div class="sec-h"><h2>Projects</h2><span class="count">4 entries</span></div>
@@ -276,6 +308,19 @@ button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid va
 (function () {
   var USER = "rex-bit";
   var $ = function (id) { return document.getElementById(id); };
+
+
+  /* highlight the nav link of the section in view */
+  var links = document.querySelectorAll(".nav a");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (a) { a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + e.target.id)); });
+      });
+    }, { rootMargin: "-35% 0px -60% 0px" });
+    ["about", "projects", "github", "skills", "contact"].forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+  }
 
   /* copy button */
   var btn = $("copy"), el = $("handle");
