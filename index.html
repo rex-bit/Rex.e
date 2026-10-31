@@ -61,10 +61,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-off
   .top>span{display:none}
   .nav{width:100%;justify-content:space-between}
 }
-@media (max-width:899px){
-  /* phone only: the bar fades out toward the left and right edges */
-  .top::before{-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent)}
-}
 .top>span{flex:none}
 .top b{color:var(--ink);font-weight:500}
 .nav{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;min-width:0}
