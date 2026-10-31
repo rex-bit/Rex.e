@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}</style>
+<title>rex-bit Portfolio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: changelog-style page. Oversized name up top, projects as dated build entries
+   with a narrow meta column, skills as a plain ledger. One bold move: the name. */
+:root{
+  --bg:#EDEFF4; --surface:#F8F9FC; --ink:#10141F; --muted:#5A6275; --line:#CFD4E0;
+  --accent:#2B45F0; --accent-ink:#FFFFFF; --ok:#1B7F5C; --warn:#8F6200;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C0F16; --surface:#141925; --ink:#E7EAF3; --muted:#98A0B5; --line:#262D3E;
+    --accent:#8C9CFF; --accent-ink:#0C0F16; --ok:#5FD3A4; --warn:#E2B54A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C0F16; --surface:#141925; --ink:#E7EAF3; --muted:#98A0B5; --line:#262D3E;
+  --accent:#8C9CFF; --accent-ink:#0C0F16; --ok:#5FD3A4; --warn:#E2B54A; color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font:16px/1.6 var(--body);
+  padding-block:20px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.wrap{max-width:880px;margin:0 auto}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font:500 13px/1.4 var(--mono);color:var(--muted);
+  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.top b{color:var(--ink);font-weight:500}
+
+/* hero */
+.hero{padding-block:56px 48px;min-width:0}
+h1{font:800 clamp(56px,18vw,132px)/.92 var(--display);letter-spacing:-.045em;margin:0 0 28px;overflow-wrap:anywhere}
+h1 i{font-style:normal;color:var(--accent)}
+.lead{font:600 clamp(22px,4.6vw,30px)/1.25 var(--display);letter-spacing:-.015em;max-width:24ch;margin:0 0 16px;text-wrap:balance}
+.sub{color:var(--muted);max-width:56ch;margin:0 0 24px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:8px;
+  font:600 15px/1 var(--body);text-decoration:none;border:1px solid var(--line);color:var(--ink);background:var(--surface)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* sections */
+section{padding-block:36px 8px;border-top:1px solid var(--line)}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 20px}
+h2{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;margin:0;color:var(--muted)}
+.count{font:400 13px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* project entries */
+.entry{display:grid;grid-template-columns:11rem minmax(0,1fr);gap:8px 28px;padding-block:22px;border-top:1px dashed var(--line)}
+.entry:first-of-type{border-top:0;padding-top:0}
+.meta{display:flex;flex-direction:column;gap:6px;font:400 13px/1.4 var(--mono);color:var(--muted);min-width:0}
+.meta .kind{color:var(--ink);font-weight:500}
+.status{display:inline-flex;align-items:center;gap:7px}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.status[data-s="build"]{color:var(--warn)}
+.status[data-s="build"]::before{background:var(--warn)}
+.status[data-s="ready"]{color:var(--ok)}
+.status[data-s="ready"]::before{background:var(--ok)}
+.body{min-width:0}
+h3{font:700 clamp(24px,4vw,30px)/1.15 var(--display);letter-spacing:-.02em;margin:0 0 8px}
+.body p{margin:0 0 12px;max-width:62ch}
+.stack{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
+.stack li{font:400 12.5px/1 var(--mono);padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--muted)}
+
+/* skills ledger */
+.ledger{margin:0;display:grid;gap:0}
+.ledger div{display:grid;grid-template-columns:11rem minmax(0,1fr);gap:4px 28px;padding-block:14px;border-top:1px dashed var(--line)}
+.ledger div:first-child{border-top:0;padding-top:0}
+.ledger dt{font:500 13px/1.6 var(--mono);color:var(--ink)}
+.ledger dd{margin:0;color:var(--muted)}
+
+/* contact */
+.contact{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+code.handle{font:500 15px/1 var(--mono);padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);user-select:all}
+button.copy{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 15px/1 var(--body);cursor:pointer}
+.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font:400 12.5px/1.5 var(--mono);color:var(--muted)}
+
+@media (max-width:560px){
+  .entry,.ledger div{grid-template-columns:minmax(0,1fr)}
+  .meta{flex-direction:row;flex-wrap:wrap;gap:4px 14px}
+  .hero{padding-block:40px 36px}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <span><b>rex-bit</b> / portfolio</span>
+    <span>build 2026.10</span>
+  </div>
+
+  <header class="hero">
+    <h1>rex-bit<i>.</i></h1>
+    <p class="lead">Membangun game Roblox dan alat web yang benar-benar dipakai.</p>
+    <p class="sub">Saya menulis skrip Luau, memodel aset di Blender, dan membuat aplikasi web dengan Next.js dan Python. Di bawah ini daftar proyek yang sedang dan sudah saya kerjakan.</p>
+    <div class="cta">
+      <a class="btn primary" href="#proyek">Lihat proyek</a>
+      <a class="btn" href="https://github.com/rex-bit" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </header>
+
+  <section id="proyek">
+    <div class="sec-h"><h2>Proyek</h2><span class="count">4 entri</span></div>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Alat web</span>
+        <span>2026</span>
+        <span class="status" data-s="ready">Siap deploy</span>
+      </div>
+      <div class="body">
+        <h3>Grab</h3>
+        <p>Website downloader video dan audio dari TikTok, Instagram, YouTube, dan situs lain. Tempel link, pilih MP4 atau MP3, lalu unduh. Dilengkapi whitelist domain, rate limit, dan batas ukuran file.</p>
+        <ul class="stack"><li>FastAPI</li><li>yt-dlp</li><li>ffmpeg</li><li>Docker</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Game Roblox</span>
+        <span>2026</span>
+        <span class="status" data-s="build">Dalam pengembangan</span>
+      </div>
+      <div class="body">
+        <h3>Game Kafe &amp; Barista</h3>
+        <p>Game kafe buatan sendiri. Aset seperti papan nama dan lampu jalan dimodel di Blender lalu diimpor ke Studio, ditambah UI kustom seperti daftar pemain.</p>
+        <ul class="stack"><li>Luau</li><li>Roblox Studio</li><li>Blender</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Aplikasi web</span>
+        <span>2026</span>
+        <span class="status" data-s="build">Dalam pengembangan</span>
+      </div>
+      <div class="body">
+        <h3>Voting OSIS</h3>
+        <p>Aplikasi pemilihan ketua OSIS untuk vote.innovatek.app. Dikerjakan bertahap: voting terbuka, lalu login email, lalu login Google.</p>
+        <ul class="stack"><li>Next.js</li><li>Supabase</li><li>Vercel</li></ul>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="meta">
+        <span class="kind">Sistem Roblox</span>
+        <span>2026</span>
+        <span class="status" data-s="ready">Berjalan</span>
+      </div>
+      <div class="body">
+        <h3>Sistem Elevator</h3>
+        <p>Elevator untuk map Roblox dengan panel dan kamera di sisi klien, skrip perjalanan di sisi server, serta dukungan karakter R6.</p>
+        <ul class="stack"><li>Luau</li><li>Client / Server</li><li>R6</li></ul>
+      </div>
+    </article>
+  </section>
+
+  <section id="skill">
+    <div class="sec-h"><h2>Skill</h2><span class="count">3 kelompok</span></div>
+    <dl class="ledger">
+      <div><dt>Roblox</dt><dd>Skrip Luau, UI kustom, modul dialog dengan efek mesin tik, sistem client–server.</dd></div>
+      <div><dt>3D</dt><dd>Pemodelan aset di Blender dan impor ke Roblox Studio.</dd></div>
+      <div><dt>Web</dt><dd>Next.js, Supabase, Vercel, serta backend Python dengan FastAPI.</dd></div>
+    </dl>
+  </section>
+
+  <section id="kontak">
+    <div class="sec-h"><h2>Kontak</h2></div>
+    <p style="margin:0 0 14px;max-width:56ch;color:var(--muted)">Kode dan proyek saya ada di GitHub. Salin nama pengguna atau buka profilnya.</p>
+    <div class="contact">
+      <code class="handle" id="handle">github.com/rex-bit</code>
+      <button class="copy" id="copy" type="button">Salin</button>
+      <a class="btn" href="https://github.com/rex-bit" target="_blank" rel="noopener">Buka profil</a>
+    </div>
+  </section>
+
+  <div class="foot">© 2026 rex-bit</div>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById("copy");
+  var el = document.getElementById("handle");
+  btn.addEventListener("click", function () {
+    var done = function () {
+      btn.textContent = "Tersalin";
+      setTimeout(function () { btn.textContent = "Salin"; }, 1600);
+    };
+    var fallback = function () {
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      btn.textContent = "Tekan salin";
+    };
+    try {
+      navigator.clipboard.writeText(el.textContent).then(done, fallback);
+    } catch (e) { fallback(); }
+  });
+})();
+</script>
+</body>
+</html>
