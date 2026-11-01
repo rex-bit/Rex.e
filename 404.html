@@ -32,6 +32,20 @@ main{text-align:center;max-width:640px;width:100%;min-width:0}
 @keyframes hb{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.985)}}
 @keyframes bb{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes fall{0%{transform:translateY(-8px);opacity:0}15%{opacity:.85}100%{transform:translateY(54px);opacity:0}}
+.art .solid,.art .lock{display:none}
+.art[data-kind="server"] .ghost,.art[data-kind="locked"] .ghost,.art[data-kind="slow"] .ghost{display:none}
+.art[data-kind="server"] .solid,.art[data-kind="locked"] .solid,.art[data-kind="slow"] .solid{display:block}
+.art .solid rect{fill:#3b3d4c}
+.art[data-kind="server"] .solid .shake{fill:#7a2a2d;animation:sh .35s linear infinite}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-1.5px)}75%{transform:translateX(1.5px)}}
+.art[data-kind="server"] .float rect:first-child{fill:#F23F43}
+.art[data-kind="locked"] #bubbleText{display:none}
+.art[data-kind="locked"] .lock{display:block}
+.art[data-kind="slow"] .hero{animation-duration:5s}
+.others{margin:26px auto 0;max-width:46ch;font:400 12.5px/1.9 var(--mono);color:var(--muted)}
+.others a{color:var(--muted);text-decoration:none;display:inline-block;padding:2px 9px;margin:2px;border:1px solid var(--line);border-radius:999px;background:rgba(14,14,17,.6)}
+.others a:hover{color:var(--ink);border-color:var(--accent)}
+.others a[aria-current="true"]{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
 @media (prefers-reduced-motion:reduce){.art *{animation:none!important}}
 h1{font:800 clamp(30px,7vw,44px)/1.1 var(--display);letter-spacing:-.025em;margin:6px 0 10px;text-wrap:balance}
 p{margin:0 auto 16px;max-width:42ch;color:var(--muted)}
@@ -44,7 +58,7 @@ code{display:inline-block;max-width:100%;overflow-wrap:anywhere;font:400 13px/1.
 </head>
 <body>
 <main>
-  <svg class="art" viewBox="0 0 520 320" role="img" aria-label="A blocky character stands at the edge of a floating island. The bridge block is missing and a floating block reads 404.">
+  <svg class="art" id="art" data-kind="missing" viewBox="0 0 520 320" role="img" aria-label="A blocky character stands at the edge of a floating island. The bridge block is missing and a floating block reads 404.">
   <defs>
     <radialGradient id="halo" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></radialGradient>
   </defs>
@@ -56,7 +70,7 @@ code{display:inline-block;max-width:100%;overflow-wrap:anywhere;font:400 13px/1.
     <circle cx="105" cy="120" r="4"/><circle cx="430" cy="150" r="3.5"/><circle cx="300" cy="44" r="3"/>
   </g>
 
-  <!-- ghost blocks where the bridge should be -->
+  <g class="solid"><rect x="212" y="206" width="38" height="26" rx="3"/><rect class="shake" x="254" y="206" width="38" height="26" rx="3"/></g>
   <g class="ghost">
     <rect x="212" y="206" width="38" height="26" rx="3"/><rect x="254" y="206" width="38" height="26" rx="3"/>
   </g>
@@ -100,7 +114,8 @@ code{display:inline-block;max-width:100%;overflow-wrap:anywhere;font:400 13px/1.
   <g class="bubble">
     <rect x="194" y="30" width="38" height="30" rx="9" fill="var(--bubble)"/>
     <path d="M200 60l-6 9 14-9z" fill="var(--bubble)"/>
-    <text x="213" y="52" text-anchor="middle" font-family="var(--display)" font-weight="800" font-size="22" fill="var(--bg)">?</text>
+    <g class="lock"><rect x="205" y="43" width="16" height="11" rx="2" fill="var(--bg)"/><path d="M208.5 43v-4a4.5 4.5 0 019 0v4" fill="none" stroke="var(--bg)" stroke-width="2.6"/></g>
+    <text id="bubbleText" x="213" y="52" text-anchor="middle" font-family="var(--display)" font-weight="800" font-size="22" fill="var(--bg)">?</text>
   </g>
 
   <!-- floating 404 block -->
@@ -108,7 +123,7 @@ code{display:inline-block;max-width:100%;overflow-wrap:anywhere;font:400 13px/1.
     <rect x="224" y="108" width="72" height="62" rx="6" fill="var(--accent)"/>
     <rect x="224" y="108" width="72" height="14" rx="6" fill="#fff" opacity=".18"/>
     <rect class="stud2" x="234.4" y="103" width="11.2" height="6" rx="2"/><rect class="stud2" x="254.4" y="103" width="11.2" height="6" rx="2"/><rect class="stud2" x="274.4" y="103" width="11.2" height="6" rx="2"/>
-    <text x="260" y="152" text-anchor="middle" font-family="var(--display)" font-weight="800" font-size="30" letter-spacing="1" fill="var(--bg)">404</text>
+    <text id="codeText" x="260" y="152" text-anchor="middle" font-family="var(--display)" font-weight="800" font-size="30" letter-spacing="1" fill="var(--bg)">404</text>
   </g>
 
   <!-- falling bits -->
@@ -121,9 +136,39 @@ code{display:inline-block;max-width:100%;overflow-wrap:anywhere;font:400 13px/1.
     <a class="btn primary" href="/Rex-bit/">Back to portfolio</a>
     <a class="btn" href="https://github.com/rex-bit" target="_blank" rel="noopener">GitHub</a>
   </div>
+  <p class="others" id="others" aria-label="Preview other error pages"></p>
 </main>
 <script>
-document.getElementById("path").textContent = location.pathname + location.search;
+(function () {
+  var E = {
+    400: ["missing", "?", "Bad request", "That request doesn't look right. Check the link and try again."],
+    401: ["locked", "", "Sign in required", "You need to be signed in to open this page."],
+    403: ["locked", "", "Access denied", "You don't have permission to open this page."],
+    404: ["missing", "?", "Page not found!", "Sorry, the page you were looking for isn't here. The block may have been moved, or the link is broken."],
+    408: ["slow", "…", "Request timed out", "That took too long. Try again in a moment."],
+    429: ["slow", "…", "Too many requests", "Slow down a little. Try again in a minute."],
+    500: ["server", "!", "Server error", "Something broke on our side. It's not you."],
+    502: ["server", "!", "Bad gateway", "A server in the middle sent a bad reply. Try again soon."],
+    503: ["server", "!", "Down for a quick fix", "This page is temporarily unavailable. Please come back soon."],
+    504: ["server", "!", "Gateway timeout", "A server took too long to answer. Try again soon."],
+    505: ["server", "!", "HTTP version not supported", "This server can't handle the way your browser asked for the page."]
+  };
+  var q = new URLSearchParams(location.search).get("code");
+  var code = E[q] ? q : "404";
+  var d = E[code];
+  var art = document.getElementById("art");
+  art.setAttribute("data-kind", d[0]);
+  document.getElementById("codeText").textContent = code;
+  document.getElementById("bubbleText").textContent = d[1];
+  document.getElementById("line").textContent = d[2];
+  document.getElementById("sub").textContent = d[3];
+  document.title = code + " | rex-bit";
+  document.getElementById("path").textContent = (q && E[q]) ? "HTTP " + code + " · " + d[2] : location.pathname + location.search;
+  var o = document.getElementById("others");
+  o.innerHTML = "Other errors: " + Object.keys(E).map(function (k) {
+    return '<a href="?code=' + k + '"' + (k === code ? ' aria-current="true"' : "") + ">" + k + "</a>";
+  }).join("");
+})();
 </script>
 </body>
 </html>
